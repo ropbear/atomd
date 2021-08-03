@@ -4,6 +4,12 @@ A markdown lexer and parser which gives the programmer atomic control over markd
 
 Atomd tokenizes first with the lexer, so parsers for other formats can be built faster and with less code.
 
+## Install
+
+```
+python3 -m pip install atomd
+```
+
 ## Lexer
 
 This functionality tokenizes the markdown based on the lexicon, which is a mapping of markdown syntax to tokens that will represent the specific syntax. Tokenization is done with a series of regular expressions.
