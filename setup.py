@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="atomd-final",
+    name="atomd",
     version="0.1.0",
     description="A markdown lexer and parser which gives the programmer atomic control over markdown parsing.",
     long_description=long_description,
