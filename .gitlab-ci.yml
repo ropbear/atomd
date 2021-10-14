@@ -1,0 +1,17 @@
+before_script:
+  - python3 --version
+
+stages:
+  - Static
+  - Unit Testing
+
+pylint:
+  stage: Static
+  script:
+    - find . -iname "*.py" -exec pylint3 -E {} \;
+
+pytest:
+  stage: Unit Testing
+  script:
+    - cd src/
+    - pytest
