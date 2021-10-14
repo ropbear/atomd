@@ -216,19 +216,19 @@ def tokenizer(r_match, r_start, lexicon_start, r_end, lexicon_end, md):
 def tokenize_whitespace(md):
     """Replace space, tab, and newlines."""
     tmp = md.replace(b"\t",LEXICON["horizontal_tab"])
-    tmp = md.replace(b"\n",LEXICON["newline"])
+    tmp = tmp.replace(b"\n",LEXICON["newline"])
     return tmp.replace(b" ",LEXICON["space"])
 
 def tokenize_escapes(md):
     """Search for escape sequences and tokenize them."""
-    tmp = re.sub(bytes(r"^\\#",'utf-8'),LEXICON["escaped_pound"], md)
+    tmp = re.sub(bytes(r"\\#",'utf-8'),LEXICON["escaped_pound"], md)
     tmp = re.sub(bytes(r"\\`",'utf-8'),LEXICON["escaped_backtick"], tmp)
     return tmp
 
 def tokenize_codeblock(md):
     """Regex match and tokenize a markdown code block."""
     return tokenizer(
-        r"^```(\n|(?!`).)+^```",
+        r"^```(\n|.)+^```",
         r"(^|\n)```",
         LEXICON["codeblock_start"],
         r"(^|\n)```",
@@ -242,7 +242,7 @@ def tokenize_inline_code(md):
         r"`.+`",
         r"`",
         LEXICON["inline_code_start"],
-        r"`",
+        r"`(?!`)",
         LEXICON["inline_code_end"],
         md
     )
@@ -272,10 +272,10 @@ def tokenize_headers(md):
 def tokenize_bold(md):
     """Regex match and tokenize bolded characters."""
     return tokenizer(
-        r"\*\*.*\*\*",
-        r"\*\*",
+        r"(\*\*|__).*(\*\*|__)",
+        r"(\*\*|__)",
         LEXICON["bold_start"],
-        r"\*\*",
+        r"(\*\*|__)(?!\*|_)",
         LEXICON["bold_end"],
         md
     )
@@ -286,17 +286,18 @@ def tokenize_italicize(md):
         r"\*.*\*",
         r"\*",
         LEXICON["italic_start"],
-        r"\*",
+        r"\*(?!\*)",
         LEXICON["italic_end"],
         md
     )
 
 def tokenize_quote(md):
     """Regex match and tokenize quoted characters."""
-    next = next_match(r"^(>.*\n)+",md)
+    next = next_match(r"^(>+ .*\n?)+",md)
     if next is None:
         return md
-    removed = re.sub(b"(^|\n)> ",b"\n",next)
+    lines = next.split(b"\n")
+    removed = b'\n'.join([re.sub(b"(^|\n)> ?",b"",line) for line in lines])
     breakout = md.split(next)
     tokenized = breakout[0] + \
                 LEXICON["quote_start"] + \

@@ -1,8 +1,12 @@
 # atomd
 
-A markdown lexer and parser which gives the programmer atomic control over markdown parsing to html.
+### Version 0.2.0
 
-Atomd tokenizes first with the lexer, so parsers for other formats can be built faster and with less code.
+A markdown lexer and parser which gives the developer atomic control over markdown parsing to html.
+
+Atomd first tokenizes the markdown with the lexer.
+
+Using the tokenized markdown, parsers for various different markup languages (HTML, XML, etc) are easier to implement, since it more or less becomes a game of find and replace.
 
 ## Install
 
@@ -10,17 +14,11 @@ Atomd tokenizes first with the lexer, so parsers for other formats can be built 
 python3 -m pip install atomd
 ```
 
-## Lexer
-
-This functionality tokenizes the markdown based on the lexicon, which is a mapping of markdown syntax to tokens that will represent the specific syntax. Tokenization is done with a series of regular expressions.
-
-## Parsers
-
-Currently, `html.py` is the only provided parser. The `parser()` function takes tokenized markdown and replaces tokens and returns the proper html.
-
 ## Usage
 
-A function in `atomd.py` called `md2html()` is provided to wrap both of these features together, allowing for easy use.
+Functions in `atomd.py` called `md2<target_language>()` combine the lexer and parser to provide an easier calling convention.
+
+In the case of the HTML parser, this is `md2html()`.
 
 If you want to parse a markdown file, do the following:
 
@@ -37,3 +35,19 @@ from atomd import md2html
 
 html = md2html(md=b"# My markdown ByteString!").decode('utf-8')
 ```
+
+## Lexer
+
+This portion of the program tokenizes the markdown based on the lexicon, which is a mapping of markdown syntax items to tokens that will represent the specific syntax.
+
+**Tokenization is done with a series of regular expressions**.
+
+If there are bugs in the program, it is likely they exist in the regular expressions and can be fixed without significant design changes to the program, which allows for quick turnaround on bugfixes.
+
+## Parsers
+
+Currently, atomd supports the following:
+
+- HTML (`html.py`)
+
+
