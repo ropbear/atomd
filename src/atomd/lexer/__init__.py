@@ -44,7 +44,6 @@ LEXICON = {
     "escaped_backtick":     b"{{escaped_backtick}}",
     "paragraph_start":      b"{{paragraph_start}}",
     "paragraph_end":        b"{{paragraph_end}}",
-    "reserved":             b"reserved",
     "danger_amp":           b"{{danger_amp}}",
     "danger_lt":            b"{{danger_lt}}",
     "danger_gt":            b"{{danger_gt}}",
@@ -238,8 +237,8 @@ def tokenize_escapes(md):
 def tokenize_codeblock(md):
     """Regex match and tokenize a markdown code block."""
     return tokenizer(
-        r"^```(\n|.)+^```",
-        r"(^|\n)```",
+        r"^```\n(\n|.)+^```",
+        r"(^|\n)```\n",
         LEXICON["codeblock_start"],
         r"(^|\n)```",
         LEXICON["codeblock_end"],
@@ -255,7 +254,10 @@ def remove_codeblock_content(md):
         + len(LEXICON["codeblock_start"])
     end_index = md.index(LEXICON["codeblock_end"])
 
+    # while md[start_index] == b"\n":
+    #     start_index += 1
     content = md[start_index:end_index]
+
     combo = LEXICON["codeblock_start"]+content+LEXICON["codeblock_end"]
     removed = md.replace(combo,LEXICON["codeblock_temporary"])
 
@@ -536,7 +538,7 @@ def lexer(filename=None,md=None):
         validate_input(md)
     except TokenExistsError as e:
         print("[!] " + str(e))
-        return None
+        raise e
 
     # each tkn_* variable denotes the markdown after being tokenized
     # for whichever character is after the tkn_ prefix.
@@ -548,7 +550,6 @@ def lexer(filename=None,md=None):
         codeblock_content_removed,
         codeblock_content_list
     ) = remove_codeblock_content(tkn_codeblocks)
-    print(codeblock_content_removed)
     tkn_inline_code = tokenize_inline_code(codeblock_content_removed)
     tkn_headers = tokenize_headers(tkn_inline_code)
     tkn_bold = tokenize_bold(tkn_headers)

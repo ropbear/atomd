@@ -4,7 +4,7 @@ import pytest
 
 test_cases = [
     (
-        b"```\n```",
+        b"```\n\n```",
         "{0}{1}".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
@@ -15,7 +15,7 @@ test_cases = [
         b"``````"
     ),
     (
-        b"\n```\n```\n",
+        b"\n```\n\n```\n",
         "\n{0}{1}\n".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
@@ -23,34 +23,34 @@ test_cases = [
     ),
     (
         b"```\nsome code\n\tsome more code\n```",
-        "{0}\nsome code\n\tsome more code{1}".format(
+        "{0}some code\n\tsome more code{1}".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
         )
     ),
     (
         b"```\nsome code\n\ts```ome more code\n```",
-        "{0}\nsome code\n\ts```ome more code{1}".format(
+        "{0}some code\n\ts```ome more code{1}".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
         )
     ),
     (
         b"```\nsome code\n\ts```om`e` more code\n```",
-        "{0}\nsome code\n\ts```om`e` more code{1}".format(
+        "{0}some code\n\ts```om`e` more code{1}".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
         )
     ),
     (
         b"```\nsome code\n\ts```om`e` more code\n```",
-        "{0}\nsome code\n\ts```om`e` more code{1}".format(
+        "{0}some code\n\ts```om`e` more code{1}".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
         )
     ),
     (
-        b"```test123\nsome code\n\ts```om`e` more code\n```",
+        b"```\ntest123\nsome code\n\ts```om`e` more code\n```",
         "{0}test123\nsome code\n\ts```om`e` more code{1}".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
@@ -67,7 +67,7 @@ test_cases = [
         )
     ),
     (
-        b"asdf\n```test123\nsome code\n\ts```om`e` more code\n```\nasdf",
+        b"asdf\n```\ntest123\nsome code\n\ts```om`e` more code\n```\nasdf",
         "asdf\n{0}test123\nsome code\n\ts```om`e` more code{1}\nasdf".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
