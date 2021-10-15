@@ -10,8 +10,67 @@ pylint:
   script:
     - find . -iname "*.py" -exec pylint3 -E {} \;
 
-pytest:
+lexicon values:
   stage: Unit Testing
   script:
-    - cd src/
-    - pytest
+    - pytest src/tests/test_lexicon_values.py
+
+tokenize bold:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_bold.py
+
+tokenize italics:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_italicize.py
+
+tokenize codeblock:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_codeblock.py
+
+tokenize escapes:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_escapes.py
+
+tokenize headers:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_headers.py
+
+tokenize hyperlink:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_bold.py
+
+tokenize image link:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_image_link.py
+
+tokenize inline code:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_inline_code.py
+
+tokenize lists:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_lists.py
+
+tokenize paragraphs:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_paragraphs.py
+
+tokenize quote:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_quote.py
+
+tokenize whitespace:
+  stage: Unit Testing
+  script:
+    - pytest src/tests/test_tokenize_whitespace.py
