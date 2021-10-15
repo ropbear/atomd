@@ -44,12 +44,12 @@ MAP = {
 
 def parse_hyperlinks(html):
     """Special parsing function for hyperlinks."""
-    text_tokens = re.search(LEXICON["link_start"]+b".*"+LEXICON["link_middle"],html)
+    text_tokens = re.search(LEXICON["link_start"]+b".*?"+LEXICON["link_middle"],html)
     if text_tokens is None:
         return html
     else:
         text_tokens = text_tokens.group()
-        href_tokens = re.search(LEXICON["link_middle"]+b".*"+LEXICON["link_end"],html)
+        href_tokens = re.search(LEXICON["link_middle"]+b".*?"+LEXICON["link_end"],html)
         href_tokens = href_tokens.group()
         text = text_tokens.replace(LEXICON["link_start"],b"")
         text = text.replace(LEXICON["link_middle"],b"")
@@ -57,9 +57,10 @@ def parse_hyperlinks(html):
         href = href.replace(LEXICON["link_end"],b"")
         link = b"<a href='"+href+b"'>"+text+b"</a>"
         new_html = re.sub(
-                    LEXICON["link_start"]+b".*"+LEXICON["link_end"],
+                    LEXICON["link_start"]+b".*?"+LEXICON["link_end"],
                     link,
-                    html
+                    html,
+                    count = 1
                 )
         return parse_hyperlinks(new_html)
 
