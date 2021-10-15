@@ -254,31 +254,24 @@ def remove_codeblock_content(md):
         + len(LEXICON["codeblock_start"])
     end_index = md.index(LEXICON["codeblock_end"])
 
-    # while md[start_index] == b"\n":
-    #     start_index += 1
     content = md[start_index:end_index]
 
     combo = LEXICON["codeblock_start"]+content+LEXICON["codeblock_end"]
-    removed = md.replace(combo,LEXICON["codeblock_temporary"])
+    removed = md.replace(combo,LEXICON["codeblock_temporary"],1)
 
-    if removed != md:
-        headers = LEXICON["codeblock_start"]+LEXICON["codeblock_end"]
-        (recurse_md, recurse_content) = remove_codeblock_content(removed)
-        return (
-            recurse_md.replace(
-                LEXICON["codeblock_temporary"],
-                headers
-            ), [content]+recurse_content
-        )
-    return (md,[content])
+    (recurse_md, recurse_content) = remove_codeblock_content(removed)
+    recurse_content.insert(0,content)
+    return (
+        recurse_md,
+        recurse_content
+    )
 
 def add_codeblock_content(md,content):
-    if content != []:
-        headers = LEXICON["codeblock_start"]+LEXICON["codeblock_end"]
+    if content is not None and content != []:
         combo = LEXICON["codeblock_start"]+escape_dangerous(content[-1])+LEXICON["codeblock_end"]
         content.pop()
         return add_codeblock_content(
-            md.replace(headers,combo,1),
+            md.replace(LEXICON["codeblock_temporary"],combo,1),
             content
         )
     else:
@@ -550,6 +543,7 @@ def lexer(filename=None,md=None):
         codeblock_content_removed,
         codeblock_content_list
     ) = remove_codeblock_content(tkn_codeblocks)
+    codeblock_content_list.reverse()
     tkn_inline_code = tokenize_inline_code(codeblock_content_removed)
     tkn_headers = tokenize_headers(tkn_inline_code)
     tkn_bold = tokenize_bold(tkn_headers)

@@ -50,8 +50,8 @@ test_cases = [
         )
     ),
     (
-        b"```\ntest123\nsome code\n\ts```om`e` more code\n```",
-        "{0}test123\nsome code\n\ts```om`e` more code{1}".format(
+        b"asdf\n```\ntest123\nsome code\n\ts```om`e` more code\n```\nasdf",
+        "asdf\n{0}test123\nsome code\n\ts```om`e` more code{1}\nasdf".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
         )
@@ -69,6 +69,13 @@ test_cases = [
     (
         b"asdf\n```\ntest123\nsome code\n\ts```om`e` more code\n```\nasdf",
         "asdf\n{0}test123\nsome code\n\ts```om`e` more code{1}\nasdf".format(
+            LEXICON["codeblock_start"].decode('utf-8'),
+            LEXICON["codeblock_end"].decode('utf-8')
+        )
+    ),
+    (
+        b"```\ncodeblock0\n```\n\n```\ncodeblock1\n```",
+        "{0}codeblock0{1}\n\n{0}codeblock1{1}".format(
             LEXICON["codeblock_start"].decode('utf-8'),
             LEXICON["codeblock_end"].decode('utf-8')
         )
