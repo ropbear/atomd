@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="atomd",
-    version="0.2.1",
+    version="0.2.2",
     description="A markdown lexer and parser which gives the programmer atomic control over markdown parsing.",
     long_description=long_description,
     long_description_content_type="text/markdown",
