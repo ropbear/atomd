@@ -39,7 +39,10 @@ MAP = {
     "escaped_pound":        b"#",
     "escaped_backtick":     b"`",
     "paragraph_start":      b"<p>",
-    "paragraph_end":        b"</p>"
+    "paragraph_end":        b"</p>",
+    "danger_amp":           b"&amp;",
+    "danger_lt":            b"&lt;",
+    "danger_gt":            b"&gt;",
 }
 
 def parse_hyperlinks(html):

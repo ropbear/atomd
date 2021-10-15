@@ -7,6 +7,7 @@ LEXICON = {
     "newline":              b"{{newline}}",
     "codeblock_start":      b"{{codeblock_start}}",
     "codeblock_end":        b"{{codeblock_end}}",
+    "codeblock_temporary":  b"{{codeblock_temporary}}",
     "header1_start":        b"{{header1_start}}",
     "header1_end":          b"{{header1_end}}",
     "header2_start":        b"{{header2_start}}",
@@ -43,7 +44,10 @@ LEXICON = {
     "escaped_backtick":     b"{{escaped_backtick}}",
     "paragraph_start":      b"{{paragraph_start}}",
     "paragraph_end":        b"{{paragraph_end}}",
-    "reserved":             b"reserved"
+    "reserved":             b"reserved",
+    "danger_amp":           b"{{danger_amp}}",
+    "danger_lt":            b"{{danger_lt}}",
+    "danger_gt":            b"{{danger_gt}}",
 }
 
 class TokenExistsError(Exception):
@@ -99,6 +103,12 @@ def left_justify(md):
         newlines += [re.sub(b"^(\t|    )",b"",line)]
     s = b"\n".join(newlines)
     return s
+
+def escape_dangerous(md):
+    amps = md.replace(b"&",LEXICON["danger_amp"])
+    lt = amps.replace(b"<",LEXICON["danger_lt"])
+    gt = lt.replace(b">",LEXICON["danger_gt"])
+    return gt
 
 def get_list_type(md):
     """
@@ -235,6 +245,42 @@ def tokenize_codeblock(md):
         LEXICON["codeblock_end"],
         md
     )
+
+def remove_codeblock_content(md):
+    if LEXICON["codeblock_start"] not in md or \
+        LEXICON["codeblock_end"] not in md:
+        return (md,[])
+
+    start_index = md.index(LEXICON["codeblock_start"]) \
+        + len(LEXICON["codeblock_start"])
+    end_index = md.index(LEXICON["codeblock_end"])
+
+    content = md[start_index:end_index]
+    combo = LEXICON["codeblock_start"]+content+LEXICON["codeblock_end"]
+    removed = md.replace(combo,LEXICON["codeblock_temporary"])
+
+    if removed != md:
+        headers = LEXICON["codeblock_start"]+LEXICON["codeblock_end"]
+        (recurse_md, recurse_content) = remove_codeblock_content(removed)
+        return (
+            recurse_md.replace(
+                LEXICON["codeblock_temporary"],
+                headers
+            ), [content]+recurse_content
+        )
+    return (md,[content])
+
+def add_codeblock_content(md,content):
+    if content != []:
+        headers = LEXICON["codeblock_start"]+LEXICON["codeblock_end"]
+        combo = LEXICON["codeblock_start"]+escape_dangerous(content[-1])+LEXICON["codeblock_end"]
+        content.pop()
+        return add_codeblock_content(
+            md.replace(headers,combo,1),
+            content
+        )
+    else:
+        return md
 
 def tokenize_inline_code(md):
     """Regex match for inline code and tokenize it."""
@@ -498,7 +544,12 @@ def lexer(filename=None,md=None):
     # to write things such as "nothing in a code block should be parsed".
     tkn_escape = tokenize_escapes(md)
     tkn_codeblocks = tokenize_codeblock(tkn_escape)
-    tkn_inline_code = tokenize_inline_code(tkn_codeblocks)
+    (
+        codeblock_content_removed,
+        codeblock_content_list
+    ) = remove_codeblock_content(tkn_codeblocks)
+    print(codeblock_content_removed)
+    tkn_inline_code = tokenize_inline_code(codeblock_content_removed)
     tkn_headers = tokenize_headers(tkn_inline_code)
     tkn_bold = tokenize_bold(tkn_headers)
     tkn_italic = tokenize_italicize(tkn_bold)
@@ -508,4 +559,6 @@ def lexer(filename=None,md=None):
     tkn_hyperlinks = tokenize_hyperlink(tkn_img_links)
     tkn_paragraphs = tokenize_paragraphs(tkn_hyperlinks)
     tkn_whitespace = tokenize_whitespace(tkn_paragraphs)
-    return tkn_whitespace
+    codeblock_content_added = \
+        add_codeblock_content(tkn_whitespace, codeblock_content_list)
+    return codeblock_content_added
