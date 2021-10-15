@@ -1,6 +1,6 @@
 # atomd
 
-### Version 0.2.2
+### Version 0.2.3
 
 A markdown lexer and parser which gives the developer atomic control over markdown parsing to html.
 
