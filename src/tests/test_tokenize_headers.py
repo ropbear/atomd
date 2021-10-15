@@ -4,8 +4,8 @@ import pytest
 
 test_cases = [
     (
-        b"# header1",
-        "{0}header1{1}".format(
+        b"# header1:",
+        "{0}header1:{1}".format(
             LEXICON["header1_start"].decode('utf-8'),
             LEXICON["header1_end"].decode('utf-8')
         )
@@ -25,8 +25,8 @@ test_cases = [
         )
     ),
     (
-        b"#### header4",
-        "{0}header4{1}".format(
+        b"#### header4:",
+        "{0}header4:{1}".format(
             LEXICON["header4_start"].decode('utf-8'),
             LEXICON["header4_end"].decode('utf-8')
         )
@@ -157,6 +157,15 @@ test_cases = [
         "{0}a{1}\nheader6".format(
             LEXICON["header6_start"].decode('utf-8'),
             LEXICON["header6_end"].decode('utf-8')
+        )
+    ),
+    (
+        b"## header2\nasdf\n### header2",
+        "{0}header2{1}\nasdf\n{2}header2{3}".format(
+            LEXICON["header2_start"].decode('utf-8'),
+            LEXICON["header2_end"].decode('utf-8'),
+            LEXICON["header3_start"].decode('utf-8'),
+            LEXICON["header3_end"].decode('utf-8'),
         )
     ),
 ]

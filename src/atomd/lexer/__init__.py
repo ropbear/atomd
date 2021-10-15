@@ -309,12 +309,12 @@ def tokenize_headers(md):
             count=1
         )
     end = re.sub(
-            b"$",
+            b"($|\n)",
             LEXICON[f"header{str(header_type)}_end"],
             start,
             count=1
         )
-    tokenized = md.replace(next,end)
+    tokenized = md.replace(next,end,1)
     return tokenize_headers(tokenized)
 
 def tokenize_bold(md):
